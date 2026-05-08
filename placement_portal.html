@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Portal</title>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --panel: #ffffff;
+            --ink: #17202f;
+            --muted: #667085;
+            --line: #d9e0ea;
+            --brand: #075e73;
+            --brand-2: #2d7d56;
+            --warn: #b54708;
+            --danger: #b42318;
+            --soft: #eaf3f5;
+            --table-head: #102a43;
+            --shadow: 0 16px 40px rgba(22, 34, 51, 0.11);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+            letter-spacing: 0;
+        }
+
+        button, input, select, textarea {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+            cursor: pointer;
+        }
+
+        .login-shell {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background:
+                linear-gradient(90deg, rgba(7, 94, 115, 0.07) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(7, 94, 115, 0.07) 1px, transparent 1px),
+                #f3f7f8;
+            background-size: 44px 44px;
+        }
+
+        .login-card-wrap {
+            display: grid;
+            align-items: center;
+            width: min(100%, 460px);
+        }
+
+        .login-card {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--brand), var(--brand-2), #c17a2c);
+        }
+
+        .login-title {
+            margin: 0 0 6px;
+            font-size: 28px;
+            line-height: 1.15;
+        }
+
+        .login-copy {
+            margin: 0 0 24px;
+            color: var(--muted);
+            line-height: 1.45;
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: var(--brand);
+            font-weight: 800;
+        }
+
+        .brand-row strong { display: block; font-size: 18px; }
+        .brand-row span { color: var(--muted); font-size: 13px; }
+
+        label {
+            display: block;
+            margin: 0 0 7px;
+            color: #344054;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 10px 12px;
+            background: #fff;
+            color: var(--ink);
+        }
+
+        textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 3px solid rgba(7, 94, 115, 0.15);
+            border-color: var(--brand);
+        }
+
+        .field { margin-bottom: 16px; }
+
+        .btn {
+            min-height: 38px;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-primary { background: var(--brand); color: #fff; }
+        .btn-secondary { background: #e5edf0; color: #12313b; }
+        .btn-success { background: var(--brand-2); color: #fff; }
+        .btn-danger { background: #fee4e2; color: var(--danger); }
+        .btn-ghost { background: transparent; color: var(--brand); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .full { width: 100%; }
+
+        .hint {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .demo-users {
+            margin-top: 18px;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr;
+        }
+
+        .demo-users button {
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            background: #f8fbfc;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 11px 12px;
+            color: #243547;
+        }
+
+        .demo-users button:hover {
+            border-color: var(--brand);
+            background: #eef8fa;
+        }
+
+        .app {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: #101828;
+            color: #fff;
+            padding: 18px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .side-brand {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding-bottom: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .side-brand .mark { background: #2d7d56; }
+
+        .user-pill {
+            margin: 18px 0;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+        }
+
+        .user-pill strong { display: block; }
+        .user-pill span { display: block; color: #c7d2df; font-size: 12px; margin-top: 4px; }
+
+        .nav {
+            display: grid;
+            gap: 6px;
+        }
+
+        .nav button {
+            width: 100%;
+            min-height: 40px;
+            border-radius: 6px;
+            padding: 10px 12px;
+            color: #d0d5dd;
+            background: transparent;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .nav button.active, .nav button:hover {
+            background: #243547;
+            color: #fff;
+        }
+
+        .main {
+            min-width: 0;
+            padding: 22px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .topbar h2 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .topbar p {
+            margin: 5px 0 0;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(22, 34, 51, 0.06);
+        }
+
+        .panel-head {
+            padding: 16px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .panel-head h3 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .panel-body { padding: 16px; }
+
+        .metric {
+            padding: 16px;
+            min-height: 116px;
+        }
+
+        .metric span {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 10px;
+            font-size: 34px;
+            color: var(--ink);
+        }
+
+        .metric small { color: var(--muted); }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 760px;
+        }
+
+        th {
+            background: var(--table-head);
+            color: #fff;
+            text-align: left;
+            font-size: 12px;
+            padding: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: middle;
+        }
+
+        tr:hover td { background: #f8fbfc; }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar input, .toolbar select {
+            width: auto;
+            min-width: 190px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            min-height: 26px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            background: #e5edf0;
+            color: #344054;
+        }
+
+        .status.placed { background: #dcfae6; color: #067647; }
+        .status.rejected { background: #fee4e2; color: var(--danger); }
+        .status.applied { background: #e0f2fe; color: #026aa2; }
+        .status.round { background: #fef0c7; color: var(--warn); }
+
+        .split-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #dbe7eb;
+            display: inline-grid;
+            place-items: center;
+            color: var(--brand);
+            font-weight: 900;
+            overflow: hidden;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .funnel {
+            display: grid;
+            gap: 10px;
+        }
+
+        .funnel-row {
+            display: grid;
+            grid-template-columns: 130px 1fr 48px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar {
+            height: 15px;
+            background: #e5edf0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand), var(--brand-2));
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(16, 24, 40, 0.58);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 10;
+        }
+
+        .modal-backdrop.open { display: flex; }
+
+        .modal {
+            width: min(100%, 680px);
+            max-height: 90vh;
+            overflow: auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal .panel-head { position: sticky; top: 0; background: #fff; z-index: 1; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .span-2 { grid-column: span 2; }
+
+        .notice {
+            padding: 12px;
+            background: var(--soft);
+            border: 1px solid #c7dfe5;
+            border-radius: 6px;
+            color: #16424d;
+            line-height: 1.45;
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 980px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar {
+                position: static;
+                height: auto;
+            }
+            .nav {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            .grid.cols-2, .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+        }
+
+        @media (max-width: 640px) {
+            .main { padding: 14px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .span-2 { grid-column: auto; }
+            .toolbar input, .toolbar select { width: 100%; min-width: 0; }
+            .demo-users { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginShell" class="login-shell">
+        <section class="login-card-wrap">
+            <form id="loginForm" class="login-card">
+                <div class="brand-row">
+                    <div class="mark">PP</div>
+                    <div>
+                        <strong>Placement Portal</strong>
+                        <span>Department-isolated access</span>
+                    </div>
+                </div>
+                <h1 class="login-title">Sign in to continue</h1>
+                <p class="login-copy">Access placement operations, analytics, student profiles, and job applications from your assigned role.</p>
+                <div class="field">
+                    <label for="loginEmail">Email</label>
+                    <input id="loginEmail" type="email" value="dean.academics@university.edu" required>
+                </div>
+                <div class="field">
+                    <label for="loginPassword">Password</label>
+                    <input id="loginPassword" type="password" value="password123" required>
+                </div>
+                <button class="btn btn-primary full" type="submit">Sign In</button>
+                <p id="loginError" class="hint"></p>
+                <p class="hint">Demo password for all accounts: <strong>password123</strong></p>
+                <div class="demo-users">
+                    <button type="button" data-login="dean.academics@university.edu"><span><strong>Dean</strong><br><span class="hint">Global analytics</span></span><span>Use</span></button>
+                    <button type="button" data-login="tpo.cse@university.edu"><span><strong>TPO CSE</strong><br><span class="hint">Department admin</span></span><span>Use</span></button>
+                    <button type="button" data-login="faculty.cse@university.edu"><span><strong>Faculty CSE</strong><br><span class="hint">Read-only reports</span></span><span>Use</span></button>
+                    <button type="button" data-login="aisha.s101@university.edu"><span><strong>Student</strong><br><span class="hint">Profile and jobs</span></span><span>Use</span></button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <div id="appShell" class="app hidden">
+        <aside class="sidebar">
+            <div class="side-brand">
+                <div class="mark">PP</div>
+                <div>
+                    <strong>Placement Portal</strong>
+                    <span class="hint">RBAC Dashboard</span>
+                </div>
+            </div>
+            <div id="currentUser" class="user-pill"></div>
+            <nav id="nav" class="nav"></nav>
+            <button id="logoutBtn" class="btn btn-secondary full" style="margin-top:18px;">Log Out</button>
+        </aside>
+        <main class="main">
+            <div class="topbar">
+                <div>
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <p id="pageSubtitle"></p>
+                </div>
+                <div id="pageActions" class="toolbar"></div>
+            </div>
+            <section id="view" class="grid"></section>
+        </main>
+    </div>
+
+    <div id="modalBackdrop" class="modal-backdrop">
+        <div class="modal">
+            <div class="panel-head">
+                <h3 id="modalTitle">Modal</h3>
+                <button id="closeModalBtn" class="btn btn-secondary" type="button">Close</button>
+            </div>
+            <div id="modalBody" class="panel-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const DEPARTMENTS = [
+            "CSE", "ECE", "ME", "CE", "EEE", "IT", "AIML", "DS", "CHE", "BT",
+            "AE", "AUTO", "MCA", "MBA", "BBA", "Physics", "Math", "English", "Design"
+        ].map((name, index) => ({ id: `D${String(index + 1).padStart(2, "0")}`, name }));
+
+        const STATUSES = ["Applied", "Technical Round", "HR Round", "Placed", "Rejected"];
+        const PASSWORD = "password123";
+
+        const seed = () => {
+            const users = [
+                { id: "U-DEAN-1", role: "Dean", name: "Dr. Meera Iyer", email: "dean.academics@university.edu", password: PASSWORD, departmentId: null },
+                { id: "U-DEAN-2", role: "Dean", name: "Dr. Victor Rao", email: "dean.research@university.edu", password: PASSWORD, departmentId: null },
+                { id: "U-DEAN-3", role: "Dean", name: "Dr. Farah Khan", email: "dean.studentaffairs@university.edu", password: PASSWORD, departmentId: null },
+                { id: "U-DEAN-4", role: "Dean", name: "Dr. Arvind Menon", email: "dean.placements@university.edu", password: PASSWORD, departmentId: null }
+            ];
+
+            DEPARTMENTS.forEach((department) => {
+                users.push({
+                    id: `U-TPO-${department.id}`,
+                    role: "TPO",
+                    name: `${department.name} Placement Officer`,
+                    email: `tpo.${department.name.toLowerCase()}@university.edu`,
+                    password: PASSWORD,
+                    departmentId: department.id
+                });
+                users.push({
+                    id: `U-FAC-${department.id}`,
+                    role: "Faculty",
+                    name: `${department.name} Faculty Mentor`,
+                    email: `faculty.${department.name.toLowerCase()}@university.edu`,
+                    password: PASSWORD,
+                    departmentId: department.id
+                });
+            });
+
+            const students = [
+                ["S101", "Aisha Sharma", "CSE", 8.8, "2003-03-12", "Placed"],
+                ["S102", "Rahul Verma", "CSE", 7.4, "2002-11-02", "Technical Round"],
+                ["S103", "Neha Pillai", "CSE", 6.9, "2003-06-18", "Applied"],
+                ["S201", "Kabir Singh", "ECE", 8.2, "2002-08-09", "HR Round"],
+                ["S202", "Nisha Das", "ECE", 7.1, "2003-01-28", "Rejected"],
+                ["S301", "Pranav Kulkarni", "ME", 8.0, "2002-09-24", "Placed"],
+                ["S401", "Tara Jain", "IT", 8.9, "2003-02-16", "Applied"],
+                ["S501", "Omar Ali", "AIML", 9.1, "2002-12-05", "Placed"],
+                ["S601", "Diya Nair", "DS", 7.8, "2003-04-11", "Technical Round"]
+            ].map(([rollNumber, name, deptName, cgpa, dob, placementStatus]) => {
+                const departmentId = deptId(deptName);
+                const userId = `U-STU-${rollNumber}`;
+                users.push({
+                    id: userId,
+                    role: "Student",
+                    name,
+                    email: `${name.split(" ")[0].toLowerCase()}.${rollNumber.toLowerCase()}@university.edu`,
+                    password: PASSWORD,
+                    departmentId
+                });
+                return {
+                    id: `ST-${rollNumber}`,
+                    userId,
+                    rollNumber,
+                    name,
+                    dob,
+                    cgpa,
+                    departmentId,
+                    profilePicture: "",
+                    resume: null,
+                    placementStatus,
+                    readinessScore: Math.round(cgpa * 9.4)
+                };
+            });
+
+            const jobs = [
+                { id: "J-1001", title: "Software Engineer", company: "Tata Digital", departmentId: deptId("CSE"), minCgpa: 7.2, openings: 18, offered: 18, deadline: "2026-05-24", status: "Open" },
+                { id: "J-1002", title: "Product Analyst", company: "Zoho", departmentId: deptId("CSE"), minCgpa: 6.8, openings: 10, offered: 10, deadline: "2026-05-20", status: "Open" },
+                { id: "J-2001", title: "Embedded Systems Trainee", company: "Bosch", departmentId: deptId("ECE"), minCgpa: 7.5, openings: 12, offered: 12, deadline: "2026-05-27", status: "Open" },
+                { id: "J-3001", title: "Graduate Engineer Trainee", company: "Larsen & Toubro", departmentId: deptId("ME"), minCgpa: 7.0, openings: 14, offered: 14, deadline: "2026-05-29", status: "Open" },
+                { id: "J-7001", title: "Data Analyst", company: "Freshworks", departmentId: deptId("DS"), minCgpa: 7.4, openings: 8, offered: 8, deadline: "2026-05-23", status: "Open" },
+                { id: "J-8001", title: "ML Engineer Intern", company: "Nvidia", departmentId: deptId("AIML"), minCgpa: 8.6, openings: 5, offered: 5, deadline: "2026-05-25", status: "Open" },
+                { id: "J-9001", title: "Business Analyst", company: "Deloitte", departmentId: deptId("MBA"), minCgpa: 7.0, openings: 20, offered: 20, deadline: "2026-06-02", status: "Open" }
+            ];
+
+            const applications = [
+                { id: "A-1", jobId: "J-1001", studentId: "ST-S101", status: "Placed", updatedAt: "2026-05-01" },
+                { id: "A-2", jobId: "J-1001", studentId: "ST-S102", status: "Technical Round", updatedAt: "2026-05-03" },
+                { id: "A-3", jobId: "J-1002", studentId: "ST-S103", status: "Applied", updatedAt: "2026-05-04" },
+                { id: "A-4", jobId: "J-2001", studentId: "ST-S201", status: "HR Round", updatedAt: "2026-05-02" },
+                { id: "A-5", jobId: "J-2001", studentId: "ST-S202", status: "Rejected", updatedAt: "2026-05-05" },
+                { id: "A-6", jobId: "J-3001", studentId: "ST-S301", status: "Placed", updatedAt: "2026-05-01" },
+                { id: "A-7", jobId: "J-7001", studentId: "ST-S601", status: "Technical Round", updatedAt: "2026-05-06" },
+                { id: "A-8", jobId: "J-8001", studentId: "ST-S501", status: "Placed", updatedAt: "2026-05-02" }
+            ];
+
+            return { departments: DEPARTMENTS, users, students, jobs, applications };
+        };
+
+        let db = loadDb();
+        let session = JSON.parse(localStorage.getItem("placementPortalSession") || "null");
+        let activeView = "dashboard";
+
+        function deptId(name) {
+            return DEPARTMENTS.find((department) => department.name === name)?.id || DEPARTMENTS[0].id;
+        }
+
+        function departmentName(id) {
+            return db.departments.find((department) => department.id === id)?.name || "All Departments";
+        }
+
+        function loadDb() {
+            const stored = localStorage.getItem("placementPortalDb");
+            if (stored) return JSON.parse(stored);
+            const seeded = seed();
+            localStorage.setItem("placementPortalDb", JSON.stringify(seeded));
+            return seeded;
+        }
+
+        function saveDb() {
+            localStorage.setItem("placementPortalDb", JSON.stringify(db));
+        }
+
+        function currentUser() {
+            return db.users.find((user) => user.id === session?.userId);
+        }
+
+        function visibleStudents() {
+            const user = currentUser();
+            if (!user) return [];
+            if (user.role === "Dean") return db.students;
+            if (user.role === "Student") return db.students.filter((student) => student.userId === user.id);
+            return db.students.filter((student) => student.departmentId === user.departmentId);
+        }
+
+        function visibleJobs() {
+            const user = currentUser();
+            if (!user) return [];
+            if (user.role === "Dean") return db.jobs;
+            return db.jobs.filter((job) => job.departmentId === user.departmentId);
+        }
+
+        function studentById(id) {
+            return db.students.find((student) => student.id === id);
+        }
+
+        function jobById(id) {
+            return db.jobs.find((job) => job.id === id);
+        }
+
+        function applicationsForScope() {
+            const studentIds = new Set(visibleStudents().map((student) => student.id));
+            const jobIds = new Set(visibleJobs().map((job) => job.id));
+            return db.applications.filter((application) => studentIds.has(application.studentId) && jobIds.has(application.jobId));
+        }
+
+        function isAllowedDepartment(departmentId) {
+            const user = currentUser();
+            return user.role === "Dean" || user.departmentId === departmentId || (user.role === "Student" && studentProfile()?.departmentId === departmentId);
+        }
+
+        function studentProfile() {
+            const user = currentUser();
+            return db.students.find((student) => student.userId === user?.id);
+        }
+
+        function setSession(user) {
+            session = { userId: user.id };
+            localStorage.setItem("placementPortalSession", JSON.stringify(session));
+            activeView = defaultView(user.role);
+            render();
+        }
+
+        function defaultView(role) {
+            return role === "Student" ? "profile" : "dashboard";
+        }
+
+        function navItems(role) {
+            if (role === "Dean") return [
+                ["dashboard", "Dashboard"], ["analytics", "Analytics"], ["accounts", "Accounts"], ["students", "Students"], ["jobs", "Jobs"], ["applications", "Applicants"]
+            ];
+            if (role === "TPO") return [
+                ["dashboard", "Dashboard"], ["analytics", "Analytics"], ["jobs", "Jobs"], ["students", "Students"], ["bulk", "Bulk Login"], ["applications", "Applicants"]
+            ];
+            if (role === "Faculty") return [
+                ["dashboard", "Dashboard"], ["analytics", "Analytics"], ["students", "Students"], ["reports", "Readiness Reports"]
+            ];
+            return [["profile", "Profile"], ["jobs", "Job Board"], ["applications", "My Applications"]];
+        }
+
+        function render() {
+            const user = currentUser();
+            document.getElementById("loginShell").classList.toggle("hidden", !!user);
+            document.getElementById("appShell").classList.toggle("hidden", !user);
+            if (!user) return;
+
+            const departmentLabel = user.role === "Dean" ? "Global access" : `Department ID ${user.departmentId} - ${departmentName(user.departmentId)}`;
+            document.getElementById("currentUser").innerHTML = `<strong>${escapeHtml(user.name)}</strong><span>${user.role} | ${departmentLabel}</span>`;
+
+            const items = navItems(user.role);
+            if (!items.some(([key]) => key === activeView)) activeView = defaultView(user.role);
+            document.getElementById("nav").innerHTML = items.map(([key, label]) => `
+                <button type="button" class="${activeView === key ? "active" : ""}" data-view="${key}">${label}</button>
+            `).join("");
+
+            document.querySelectorAll("[data-view]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    activeView = button.dataset.view;
+                    render();
+                });
+            });
+
+            const renderers = {
+                dashboard: renderDashboard,
+                analytics: renderAnalytics,
+                accounts: renderAccounts,
+                students: renderStudents,
+                jobs: user.role === "Student" ? renderStudentJobs : renderJobs,
+                bulk: renderBulk,
+                applications: user.role === "Student" ? renderMyApplications : renderApplications,
+                profile: renderProfile,
+                reports: renderReports
+            };
+            renderers[activeView]();
+            bindSharedActions();
+        }
+
+        function setPage(title, subtitle, actions = "") {
+            document.getElementById("pageTitle").textContent = title;
+            document.getElementById("pageSubtitle").textContent = subtitle;
+            document.getElementById("pageActions").innerHTML = actions;
+        }
+
+        function renderDashboard() {
+            const user = currentUser();
+            const students = visibleStudents();
+            const jobs = visibleJobs();
+            const applications = applicationsForScope();
+            const placed = students.filter((student) => student.placementStatus === "Placed").length;
+            setPage("Dashboard", user.role === "Dean" ? "Global placement overview across all departments." : `Restricted to Department ID ${user.departmentId}.`);
+            document.getElementById("view").innerHTML = `
+                <div class="grid cols-4">
+                    ${metric("Students", students.length, "Visible in your scope")}
+                    ${metric("Open Jobs", jobs.filter((job) => job.status === "Open").length, "Current postings")}
+                    ${metric("Applications", applications.length, "Tracked applicants")}
+                    ${metric("Placed", placed, "Confirmed placements")}
+                </div>
+                <div class="grid cols-2">
+                    ${analyticsPanel()}
+                    ${departmentSummaryPanel()}
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h3>Recent Applicant Activity</h3></div>
+                    <div class="table-wrap">${applicationsTable(applications.slice(-8).reverse(), user.role !== "Faculty")}</div>
+                </div>
+            `;
+        }
+
+        function metric(label, value, foot) {
+            return `<div class="panel metric"><span>${label}</span><strong>${value}</strong><small>${foot}</small></div>`;
+        }
+
+        function renderAnalytics() {
+            setPage("Recruitment Funnel Analytics", "Track Applied, Technical Round, HR Round, Placed, and Rejected statuses.");
+            document.getElementById("view").innerHTML = `
+                <div class="grid cols-2">
+                    ${analyticsPanel()}
+                    ${departmentSummaryPanel()}
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h3>Jobs Offered vs Students Placed</h3></div>
+                    <div class="table-wrap">${departmentSummaryTable()}</div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h3>Applicants Per Job Posting</h3></div>
+                    <div class="table-wrap">${jobApplicantCountsTable()}</div>
+                </div>
+            `;
+        }
+
+        function analyticsPanel() {
+            const apps = applicationsForScope();
+            const total = Math.max(apps.length, 1);
+            const counts = STATUSES.map((status) => [status, apps.filter((application) => application.status === status).length]);
+            return `
+                <div class="panel">
+                    <div class="panel-head"><h3>Recruitment Funnel</h3></div>
+                    <div class="panel-body funnel">
+                        ${counts.map(([status, count]) => `
+                            <div class="funnel-row">
+                                <strong>${status}</strong>
+                                <div class="bar"><span style="width:${Math.round((count / total) * 100)}%"></span></div>
+                                <span>${count}</span>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+        }
+
+        function departmentSummaryPanel() {
+            const rows = summaryByDepartment();
+            return `
+                <div class="panel">
+                    <div class="panel-head"><h3>Department Summary</h3></div>
+                    <div class="table-wrap">${summaryMiniTable(rows)}</div>
+                </div>
+            `;
+        }
+
+        function summaryByDepartment() {
+            const user = currentUser();
+            const departments = user.role === "Dean" ? db.departments : db.departments.filter((department) => department.id === user.departmentId);
+            return departments.map((department) => {
+                const jobs = db.jobs.filter((job) => job.departmentId === department.id);
+                const students = db.students.filter((student) => student.departmentId === department.id);
+                return {
+                    department,
+                    offered: jobs.reduce((sum, job) => sum + Number(job.offered || job.openings || 0), 0),
+                    placed: students.filter((student) => student.placementStatus === "Placed").length,
+                    students: students.length
+                };
+            }).filter((row) => row.students || row.offered);
+        }
+
+        function summaryMiniTable(rows) {
+            return `
+                <table>
+                    <thead><tr><th>Department ID</th><th>Department</th><th>Offered</th><th>Placed</th></tr></thead>
+                    <tbody>${rows.slice(0, 8).map((row) => `
+                        <tr><td>${row.department.id}</td><td>${row.department.name}</td><td>${row.offered}</td><td>${row.placed}</td></tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function departmentSummaryTable() {
+            const rows = summaryByDepartment();
+            return `
+                <table>
+                    <thead><tr><th>Department ID</th><th>Department</th><th>Jobs Offered</th><th>Students Placed</th><th>Placement Rate</th></tr></thead>
+                    <tbody>${rows.map((row) => `
+                        <tr>
+                            <td>${row.department.id}</td>
+                            <td>${row.department.name}</td>
+                            <td>${row.offered}</td>
+                            <td>${row.placed}</td>
+                            <td>${row.students ? Math.round((row.placed / row.students) * 100) : 0}%</td>
+                        </tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function jobApplicantCountsTable() {
+            const rows = visibleJobs().map((job) => ({
+                job,
+                count: db.applications.filter((application) => application.jobId === job.id).length
+            }));
+            return `
+                <table>
+                    <thead><tr><th>Job ID</th><th>Company</th><th>Role</th><th>Department ID</th><th>Min CGPA</th><th>Applicants</th></tr></thead>
+                    <tbody>${rows.map(({ job, count }) => `
+                        <tr><td>${job.id}</td><td>${job.company}</td><td>${job.title}</td><td>${job.departmentId}</td><td>${job.minCgpa}</td><td>${count}</td></tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function renderAccounts() {
+            const user = currentUser();
+            if (user.role !== "Dean") return renderDashboard();
+            setPage("Account Management", "Create and manage Students, Faculty, and TPOs with Department ID assignment.", `<button id="newAccountBtn" class="btn btn-primary">Add Account</button>`);
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head"><h3>Users</h3><div class="toolbar"><input id="accountSearch" placeholder="Search users"></div></div>
+                    <div class="table-wrap" id="accountsTable"></div>
+                </div>
+                <div class="notice">Schema note: every non-Dean user has Department ID as a foreign key. TPO and Faculty screens filter all queries by this value.</div>
+            `;
+            document.getElementById("newAccountBtn").addEventListener("click", () => accountModal());
+            document.getElementById("accountSearch").addEventListener("input", renderAccountsTable);
+            renderAccountsTable();
+        }
+
+        function renderAccountsTable() {
+            const query = document.getElementById("accountSearch")?.value.toLowerCase() || "";
+            const rows = db.users.filter((user) => [user.name, user.email, user.role, user.departmentId || ""].join(" ").toLowerCase().includes(query));
+            document.getElementById("accountsTable").innerHTML = `
+                <table>
+                    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Department ID</th><th>Department</th><th>Actions</th></tr></thead>
+                    <tbody>${rows.map((user) => `
+                        <tr>
+                            <td>${escapeHtml(user.name)}</td>
+                            <td>${escapeHtml(user.email)}</td>
+                            <td>${user.role}</td>
+                            <td>${user.departmentId || "Global"}</td>
+                            <td>${user.departmentId ? departmentName(user.departmentId) : "All"}</td>
+                            <td><button class="btn btn-secondary" data-edit-account="${user.id}">Edit</button></td>
+                        </tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+            document.querySelectorAll("[data-edit-account]").forEach((button) => button.addEventListener("click", () => accountModal(button.dataset.editAccount)));
+        }
+
+        function accountModal(id = "") {
+            const account = db.users.find((user) => user.id === id) || { role: "Student", departmentId: db.departments[0].id, password: PASSWORD };
+            openModal(id ? "Edit Account" : "Add Account", `
+                <form id="accountForm" class="form-grid">
+                    ${input("name", "Name", account.name || "")}
+                    ${input("email", "Email", account.email || "", "email")}
+                    <div class="field">
+                        <label for="role">Role</label>
+                        <select id="role">${["Student", "Faculty", "TPO", "Dean"].map((role) => `<option ${account.role === role ? "selected" : ""}>${role}</option>`).join("")}</select>
+                    </div>
+                    <div class="field">
+                        <label for="departmentId">Department ID</label>
+                        <select id="departmentId"><option value="">Global</option>${db.departments.map((department) => `<option value="${department.id}" ${account.departmentId === department.id ? "selected" : ""}>${department.id} - ${department.name}</option>`).join("")}</select>
+                    </div>
+                    ${input("password", "Password", account.password || PASSWORD)}
+                    <div class="field"><label>&nbsp;</label><button class="btn btn-primary full" type="submit">Save Account</button></div>
+                </form>
+            `);
+            document.getElementById("accountForm").addEventListener("submit", (event) => {
+                event.preventDefault();
+                const role = value("role");
+                const departmentId = role === "Dean" ? null : value("departmentId");
+                if (role !== "Dean" && !departmentId) return alert("Department ID is required for Students, Faculty, and TPOs.");
+                const payload = { name: value("name"), email: value("email"), role, departmentId, password: value("password") || PASSWORD };
+                if (id) Object.assign(account, payload);
+                else db.users.push({ id: `U-${Date.now()}`, ...payload });
+                saveDb();
+                closeModal();
+                render();
+            });
+        }
+
+        function renderStudents() {
+            const readonly = currentUser().role === "Faculty";
+            setPage("Students", readonly ? "View-only department student list and academic progress." : "Manage student data inside your authorized scope.");
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3>Student Directory</h3>
+                        <div class="toolbar">
+                            <input id="studentSearch" placeholder="Search students">
+                            <select id="statusFilter"><option value="">All statuses</option>${STATUSES.map((status) => `<option>${status}</option>`).join("")}</select>
+                        </div>
+                    </div>
+                    <div class="table-wrap" id="studentsTable"></div>
+                </div>
+            `;
+            document.getElementById("studentSearch").addEventListener("input", renderStudentsTable);
+            document.getElementById("statusFilter").addEventListener("change", renderStudentsTable);
+            renderStudentsTable();
+        }
+
+        function renderStudentsTable() {
+            const query = document.getElementById("studentSearch")?.value.toLowerCase() || "";
+            const filter = document.getElementById("statusFilter")?.value || "";
+            const readonly = currentUser().role === "Faculty";
+            const rows = visibleStudents().filter((student) => {
+                const haystack = [student.name, student.rollNumber, student.departmentId, departmentName(student.departmentId), student.cgpa].join(" ").toLowerCase();
+                return haystack.includes(query) && (!filter || student.placementStatus === filter);
+            });
+            document.getElementById("studentsTable").innerHTML = `
+                <table>
+                    <thead><tr><th>Student</th><th>Roll No.</th><th>DOB</th><th>CGPA</th><th>Department ID</th><th>Status</th><th>Readiness</th><th>Resume</th>${readonly ? "" : "<th>Actions</th>"}</tr></thead>
+                    <tbody>${rows.map((student) => `
+                        <tr>
+                            <td><div class="profile-row">${avatar(student)}<strong>${escapeHtml(student.name)}</strong></div></td>
+                            <td>${student.rollNumber}</td>
+                            <td>${student.dob}</td>
+                            <td>${student.cgpa}</td>
+                            <td>${student.departmentId}</td>
+                            <td>${statusBadge(student.placementStatus)}</td>
+                            <td>${student.readinessScore}%</td>
+                            <td>${student.resume ? `<button class="btn btn-ghost" data-view-resume="${student.id}">View PDF</button>` : "Not uploaded"}</td>
+                            ${readonly ? "" : `<td><button class="btn btn-secondary" data-edit-student="${student.id}">Edit</button></td>`}
+                        </tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+            document.querySelectorAll("[data-edit-student]").forEach((button) => button.addEventListener("click", () => studentModal(button.dataset.editStudent)));
+            bindSharedActions();
+        }
+
+        function studentModal(id) {
+            const student = studentById(id);
+            if (!student || !isAllowedDepartment(student.departmentId)) return alert("You cannot edit this department.");
+            openModal("Edit Student", `
+                <form id="studentForm" class="form-grid">
+                    ${input("studentName", "Name", student.name)}
+                    ${input("rollNumber", "Roll Number", student.rollNumber)}
+                    ${input("dob", "DOB", student.dob, "date")}
+                    ${input("cgpa", "CGPA", student.cgpa, "number", "0.1", "0", "10")}
+                    <div class="field">
+                        <label for="placementStatus">Placement Status</label>
+                        <select id="placementStatus">${STATUSES.map((status) => `<option ${student.placementStatus === status ? "selected" : ""}>${status}</option>`).join("")}</select>
+                    </div>
+                    ${input("readinessScore", "Readiness Score", student.readinessScore, "number", "1", "0", "100")}
+                    <div class="span-2"><button class="btn btn-primary" type="submit">Save Student</button></div>
+                </form>
+            `);
+            document.getElementById("studentForm").addEventListener("submit", (event) => {
+                event.preventDefault();
+                Object.assign(student, {
+                    name: value("studentName"),
+                    rollNumber: value("rollNumber"),
+                    dob: value("dob"),
+                    cgpa: Number(value("cgpa")),
+                    placementStatus: value("placementStatus"),
+                    readinessScore: Number(value("readinessScore"))
+                });
+                saveDb();
+                closeModal();
+                render();
+            });
+        }
+
+        function renderJobs() {
+            setPage("Job Management", "Create postings with eligibility criteria and monitor real-time applicants per job.", `<button id="newJobBtn" class="btn btn-primary">Add Job</button>`);
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head"><h3>Job Postings</h3><div class="toolbar"><input id="jobSearch" placeholder="Search jobs"></div></div>
+                    <div class="table-wrap" id="jobsTable"></div>
+                </div>
+            `;
+            document.getElementById("newJobBtn").addEventListener("click", () => jobModal());
+            document.getElementById("jobSearch").addEventListener("input", renderJobsTable);
+            renderJobsTable();
+        }
+
+        function renderJobsTable() {
+            const query = document.getElementById("jobSearch")?.value.toLowerCase() || "";
+            const rows = visibleJobs().filter((job) => [job.title, job.company, departmentName(job.departmentId)].join(" ").toLowerCase().includes(query));
+            document.getElementById("jobsTable").innerHTML = `
+                <table>
+                    <thead><tr><th>Job ID</th><th>Company</th><th>Role</th><th>Department ID</th><th>Min CGPA</th><th>Openings</th><th>Deadline</th><th>Applicants</th><th>Actions</th></tr></thead>
+                    <tbody>${rows.map((job) => `
+                        <tr>
+                            <td>${job.id}</td><td>${job.company}</td><td>${job.title}</td><td>${job.departmentId}</td>
+                            <td>${job.minCgpa}</td><td>${job.openings}</td><td>${job.deadline}</td>
+                            <td>${db.applications.filter((application) => application.jobId === job.id).length}</td>
+                            <td><div class="split-actions"><button class="btn btn-secondary" data-edit-job="${job.id}">Edit</button><button class="btn btn-ghost" data-job-apps="${job.id}">Applicants</button></div></td>
+                        </tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+            document.querySelectorAll("[data-edit-job]").forEach((button) => button.addEventListener("click", () => jobModal(button.dataset.editJob)));
+            document.querySelectorAll("[data-job-apps]").forEach((button) => button.addEventListener("click", () => {
+                activeView = "applications";
+                render();
+                const filter = document.getElementById("applicationJobFilter");
+                if (filter) {
+                    filter.value = button.dataset.jobApps;
+                    renderApplicationsTable();
+                }
+            }));
+        }
+
+        function jobModal(id = "") {
+            const user = currentUser();
+            const job = jobById(id) || { departmentId: user.role === "Dean" ? db.departments[0].id : user.departmentId, minCgpa: 7, openings: 1, offered: 1, status: "Open" };
+            if (id && !isAllowedDepartment(job.departmentId)) return alert("You cannot edit this department.");
+            openModal(id ? "Edit Job" : "Add Job", `
+                <form id="jobForm" class="form-grid">
+                    ${input("company", "Company", job.company || "")}
+                    ${input("title", "Role", job.title || "")}
+                    <div class="field">
+                        <label for="jobDepartment">Department ID</label>
+                        <select id="jobDepartment" ${user.role !== "Dean" ? "disabled" : ""}>${db.departments.map((department) => `<option value="${department.id}" ${job.departmentId === department.id ? "selected" : ""}>${department.id} - ${department.name}</option>`).join("")}</select>
+                    </div>
+                    ${input("minCgpa", "Minimum CGPA", job.minCgpa, "number", "0.1", "0", "10")}
+                    ${input("openings", "Openings", job.openings, "number", "1", "1")}
+                    ${input("deadline", "Deadline", job.deadline || "", "date")}
+                    <div class="field">
+                        <label for="jobStatus">Status</label>
+                        <select id="jobStatus"><option ${job.status === "Open" ? "selected" : ""}>Open</option><option ${job.status === "Closed" ? "selected" : ""}>Closed</option></select>
+                    </div>
+                    <div class="field"><label>&nbsp;</label><button class="btn btn-primary full" type="submit">Save Job</button></div>
+                </form>
+            `);
+            document.getElementById("jobForm").addEventListener("submit", (event) => {
+                event.preventDefault();
+                const payload = {
+                    company: value("company"),
+                    title: value("title"),
+                    departmentId: user.role === "Dean" ? value("jobDepartment") : user.departmentId,
+                    minCgpa: Number(value("minCgpa")),
+                    openings: Number(value("openings")),
+                    offered: Number(value("openings")),
+                    deadline: value("deadline"),
+                    status: value("jobStatus")
+                };
+                if (id) Object.assign(job, payload);
+                else db.jobs.push({ id: `J-${Date.now()}`, ...payload });
+                saveDb();
+                closeModal();
+                render();
+            });
+        }
+
+        function renderStudentJobs() {
+            const student = studentProfile();
+            setPage("Job Board", "Only eligible jobs are available for application.");
+            const rows = visibleJobs().filter((job) => job.status === "Open");
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head"><h3>Eligible Job Board</h3></div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead><tr><th>Company</th><th>Role</th><th>Department ID</th><th>Required CGPA</th><th>Your CGPA</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody>${rows.map((job) => {
+                                const applied = db.applications.find((application) => application.jobId === job.id && application.studentId === student.id);
+                                const eligible = student.cgpa >= job.minCgpa;
+                                return `
+                                    <tr>
+                                        <td>${job.company}</td><td>${job.title}</td><td>${job.departmentId}</td><td>${job.minCgpa}</td><td>${student.cgpa}</td>
+                                        <td>${applied ? statusBadge(applied.status) : eligible ? "Eligible" : "Not eligible"}</td>
+                                        <td><button class="btn btn-primary" ${!eligible || applied ? "disabled" : ""} data-apply-job="${job.id}">Apply</button></td>
+                                    </tr>
+                                `;
+                            }).join("")}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            document.querySelectorAll("[data-apply-job]").forEach((button) => button.addEventListener("click", () => applyForJob(button.dataset.applyJob)));
+        }
+
+        function applyForJob(jobId) {
+            const student = studentProfile();
+            const job = jobById(jobId);
+            if (!student || !job || student.departmentId !== job.departmentId || student.cgpa < job.minCgpa) return alert("Eligibility check failed.");
+            db.applications.push({ id: `A-${Date.now()}`, jobId, studentId: student.id, status: "Applied", updatedAt: today() });
+            student.placementStatus = "Applied";
+            saveDb();
+            render();
+        }
+
+        function renderBulk() {
+            const user = currentUser();
+            if (user.role !== "TPO") return renderDashboard();
+            setPage("Bulk Student Login", "Import student accounts for your department using CSV or pasted rows.");
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head"><h3>Department ${user.departmentId} Import</h3></div>
+                    <div class="panel-body">
+                        <div class="notice">Format: rollNumber,name,email,dob,cgpa. New student users receive password <strong>${PASSWORD}</strong> and Department ID <strong>${user.departmentId}</strong>.</div>
+                        <div class="field" style="margin-top:14px;">
+                            <label for="bulkRows">CSV rows</label>
+                            <textarea id="bulkRows">S104,Mehul Reddy,mehul.s104@university.edu,2003-07-21,7.6
+S105,Priya Sen,priya.s105@university.edu,2002-10-13,8.4</textarea>
+                        </div>
+                        <div class="toolbar">
+                            <input id="bulkFile" type="file" accept=".csv,text/csv">
+                            <button id="bulkImportBtn" class="btn btn-primary">Import Students</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head"><h3>Current Department Students</h3></div>
+                    <div class="table-wrap">${studentsCompactTable(visibleStudents())}</div>
+                </div>
+            `;
+            document.getElementById("bulkFile").addEventListener("change", readBulkFile);
+            document.getElementById("bulkImportBtn").addEventListener("click", importBulkRows);
+        }
+
+        function readBulkFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            file.text().then((text) => document.getElementById("bulkRows").value = text);
+        }
+
+        function importBulkRows() {
+            const user = currentUser();
+            const rows = document.getElementById("bulkRows").value.split(/\n+/).map((row) => row.trim()).filter(Boolean);
+            rows.forEach((row) => {
+                const [rollNumber, name, email, dob, cgpa] = row.split(",").map((part) => part.trim());
+                if (!rollNumber || !name || !email) return;
+                const userId = `U-STU-${rollNumber}-${Date.now()}`;
+                db.users.push({ id: userId, role: "Student", name, email, password: PASSWORD, departmentId: user.departmentId });
+                db.students.push({
+                    id: `ST-${rollNumber}-${Date.now()}`,
+                    userId,
+                    rollNumber,
+                    name,
+                    dob: dob || "",
+                    cgpa: Number(cgpa || 0),
+                    departmentId: user.departmentId,
+                    profilePicture: "",
+                    resume: null,
+                    placementStatus: "Applied",
+                    readinessScore: Math.round(Number(cgpa || 0) * 9)
+                });
+            });
+            saveDb();
+            render();
+        }
+
+        function renderApplications() {
+            setPage("Applicant Tracking", "View applicants per job and update progress through the recruitment funnel.");
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3>Applicants</h3>
+                        <div class="toolbar">
+                            <select id="applicationJobFilter"><option value="">All jobs</option>${visibleJobs().map((job) => `<option value="${job.id}">${job.company} - ${job.title}</option>`).join("")}</select>
+                            <select id="applicationStatusFilter"><option value="">All statuses</option>${STATUSES.map((status) => `<option>${status}</option>`).join("")}</select>
+                        </div>
+                    </div>
+                    <div class="table-wrap" id="applicationsTable"></div>
+                </div>
+            `;
+            document.getElementById("applicationJobFilter").addEventListener("change", renderApplicationsTable);
+            document.getElementById("applicationStatusFilter").addEventListener("change", renderApplicationsTable);
+            renderApplicationsTable();
+        }
+
+        function renderApplicationsTable() {
+            const jobFilter = document.getElementById("applicationJobFilter")?.value || "";
+            const statusFilter = document.getElementById("applicationStatusFilter")?.value || "";
+            let apps = applicationsForScope();
+            if (jobFilter) apps = apps.filter((application) => application.jobId === jobFilter);
+            if (statusFilter) apps = apps.filter((application) => application.status === statusFilter);
+            document.getElementById("applicationsTable").innerHTML = applicationsTable(apps, currentUser().role !== "Faculty");
+            bindSharedActions();
+        }
+
+        function applicationsTable(apps, editable) {
+            return `
+                <table>
+                    <thead><tr><th>Student</th><th>Roll No.</th><th>CGPA</th><th>Department ID</th><th>Company</th><th>Role</th><th>Status</th><th>Updated</th>${editable ? "<th>Actions</th>" : ""}</tr></thead>
+                    <tbody>${apps.map((application) => {
+                        const student = studentById(application.studentId);
+                        const job = jobById(application.jobId);
+                        if (!student || !job) return "";
+                        return `
+                            <tr>
+                                <td>${escapeHtml(student.name)}</td><td>${student.rollNumber}</td><td>${student.cgpa}</td><td>${student.departmentId}</td>
+                                <td>${job.company}</td><td>${job.title}</td><td>${statusBadge(application.status)}</td><td>${application.updatedAt}</td>
+                                ${editable ? `<td><button class="btn btn-secondary" data-status-modal="${application.id}">Update Status</button></td>` : ""}
+                            </tr>
+                        `;
+                    }).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function statusModal(applicationId) {
+            const application = db.applications.find((item) => item.id === applicationId);
+            const student = studentById(application.studentId);
+            const job = jobById(application.jobId);
+            if (!application || !student || !job || !isAllowedDepartment(student.departmentId)) return alert("You cannot update this application.");
+            openModal("Status Update", `
+                <div class="notice">${escapeHtml(student.name)} | ${job.company} - ${job.title}</div>
+                <div class="grid cols-3" style="margin-top:16px;">
+                    ${STATUSES.map((status) => `<button class="btn ${status === "Placed" ? "btn-success" : "btn-secondary"}" data-set-status="${status}">${status}</button>`).join("")}
+                </div>
+            `);
+            document.querySelectorAll("[data-set-status]").forEach((button) => button.addEventListener("click", () => {
+                application.status = button.dataset.setStatus;
+                application.updatedAt = today();
+                student.placementStatus = application.status;
+                saveDb();
+                closeModal();
+                render();
+            }));
+        }
+
+        function renderMyApplications() {
+            const student = studentProfile();
+            setPage("My Applications", "Track your current recruitment progress.");
+            const apps = db.applications.filter((application) => application.studentId === student.id);
+            document.getElementById("view").innerHTML = `<div class="panel"><div class="panel-head"><h3>Application Status</h3></div><div class="table-wrap">${applicationsTable(apps, false)}</div></div>`;
+        }
+
+        function renderProfile() {
+            const student = studentProfile();
+            setPage("Student Profile", "Manage your profile picture, academic details, and PDF resume.");
+            document.getElementById("view").innerHTML = `
+                <div class="grid cols-2">
+                    <div class="panel">
+                        <div class="panel-head"><h3>Profile Details</h3></div>
+                        <div class="panel-body">
+                            <form id="profileForm" class="form-grid">
+                                <div class="span-2 profile-row">${avatar(student)}<strong>${escapeHtml(student.name)}</strong></div>
+                                ${input("profileName", "Name", student.name)}
+                                ${input("profileRoll", "Roll Number", student.rollNumber)}
+                                ${input("profileDob", "DOB", student.dob, "date")}
+                                ${input("profileCgpa", "CGPA", student.cgpa, "number", "0.1", "0", "10")}
+                                <div class="field">
+                                    <label>Department ID</label>
+                                    <input value="${student.departmentId} - ${departmentName(student.departmentId)}" disabled>
+                                </div>
+                                <div class="field">
+                                    <label for="profilePicture">Profile Picture</label>
+                                    <input id="profilePicture" type="file" accept="image/*">
+                                </div>
+                                <div class="span-2"><button class="btn btn-primary" type="submit">Save Profile</button></div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-head"><h3>Resume Management</h3></div>
+                        <div class="panel-body">
+                            <p class="hint">Upload, view, replace, or delete a PDF resume. Only PDF files are accepted.</p>
+                            <div class="toolbar">
+                                <input id="resumeFile" type="file" accept="application/pdf,.pdf">
+                                <button id="uploadResumeBtn" class="btn btn-primary">Upload / Replace</button>
+                                <button id="viewResumeBtn" class="btn btn-secondary" ${student.resume ? "" : "disabled"}>View</button>
+                                <button id="deleteResumeBtn" class="btn btn-danger" ${student.resume ? "" : "disabled"}>Delete</button>
+                            </div>
+                            <div style="margin-top:16px;">${student.resume ? `Current resume: <strong>${escapeHtml(student.resume.name)}</strong>` : "No resume uploaded."}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById("profileForm").addEventListener("submit", saveProfile);
+            document.getElementById("profilePicture").addEventListener("change", saveProfilePicture);
+            document.getElementById("uploadResumeBtn").addEventListener("click", uploadResume);
+            document.getElementById("viewResumeBtn").addEventListener("click", () => viewResume(student.id));
+            document.getElementById("deleteResumeBtn").addEventListener("click", deleteResume);
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+            const student = studentProfile();
+            student.name = value("profileName");
+            student.rollNumber = value("profileRoll");
+            student.dob = value("profileDob");
+            student.cgpa = Number(value("profileCgpa"));
+            const user = currentUser();
+            user.name = student.name;
+            saveDb();
+            render();
+        }
+
+        function saveProfilePicture(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                studentProfile().profilePicture = reader.result;
+                saveDb();
+                render();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function uploadResume() {
+            const file = document.getElementById("resumeFile").files[0];
+            if (!file) return alert("Choose a PDF resume first.");
+            if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) return alert("Only PDF resumes are supported.");
+            const reader = new FileReader();
+            reader.onload = () => {
+                studentProfile().resume = { name: file.name, dataUrl: reader.result, updatedAt: today() };
+                saveDb();
+                render();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function viewResume(studentId) {
+            const student = studentById(studentId);
+            if (!student?.resume || !isAllowedDepartment(student.departmentId)) return;
+            openModal("Resume PDF", `<iframe title="Resume PDF" src="${student.resume.dataUrl}" style="width:100%;height:70vh;border:1px solid var(--line);"></iframe>`);
+        }
+
+        function deleteResume() {
+            if (!confirm("Delete the uploaded resume?")) return;
+            studentProfile().resume = null;
+            saveDb();
+            render();
+        }
+
+        function renderReports() {
+            setPage("Placement Readiness Reports", "Faculty view of academic progress and placement readiness.");
+            document.getElementById("view").innerHTML = `
+                <div class="panel">
+                    <div class="panel-head"><h3>Readiness Report</h3><div class="toolbar"><input id="reportSearch" placeholder="Search reports"></div></div>
+                    <div class="table-wrap" id="reportsTable"></div>
+                </div>
+            `;
+            document.getElementById("reportSearch").addEventListener("input", renderReportsTable);
+            renderReportsTable();
+        }
+
+        function renderReportsTable() {
+            const query = document.getElementById("reportSearch")?.value.toLowerCase() || "";
+            const rows = visibleStudents().filter((student) => [student.name, student.rollNumber].join(" ").toLowerCase().includes(query));
+            document.getElementById("reportsTable").innerHTML = `
+                <table>
+                    <thead><tr><th>Student</th><th>CGPA</th><th>Status</th><th>Readiness Score</th><th>Report</th></tr></thead>
+                    <tbody>${rows.map((student) => `
+                        <tr>
+                            <td>${escapeHtml(student.name)}</td>
+                            <td>${student.cgpa}</td>
+                            <td>${statusBadge(student.placementStatus)}</td>
+                            <td>${student.readinessScore}%</td>
+                            <td>${student.cgpa >= 7.5 ? "Placement ready" : "Needs mentoring and targeted applications"}</td>
+                        </tr>
+                    `).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function studentsCompactTable(rows) {
+            return `
+                <table>
+                    <thead><tr><th>Name</th><th>Roll No.</th><th>CGPA</th><th>Department ID</th><th>Status</th></tr></thead>
+                    <tbody>${rows.map((student) => `<tr><td>${escapeHtml(student.name)}</td><td>${student.rollNumber}</td><td>${student.cgpa}</td><td>${student.departmentId}</td><td>${statusBadge(student.placementStatus)}</td></tr>`).join("")}</tbody>
+                </table>
+            `;
+        }
+
+        function bindSharedActions() {
+            document.querySelectorAll("[data-status-modal]").forEach((button) => {
+                button.onclick = () => statusModal(button.dataset.statusModal);
+            });
+            document.querySelectorAll("[data-view-resume]").forEach((button) => {
+                button.onclick = () => viewResume(button.dataset.viewResume);
+            });
+        }
+
+        function input(id, labelText, val = "", type = "text", step = "", min = "", max = "") {
+            return `
+                <div class="field">
+                    <label for="${id}">${labelText}</label>
+                    <input id="${id}" type="${type}" value="${escapeAttr(val)}" ${step ? `step="${step}"` : ""} ${min !== "" ? `min="${min}"` : ""} ${max !== "" ? `max="${max}"` : ""} required>
+                </div>
+            `;
+        }
+
+        function value(id) {
+            return document.getElementById(id).value.trim();
+        }
+
+        function avatar(student) {
+            if (student.profilePicture) return `<img class="avatar" src="${student.profilePicture}" alt="">`;
+            return `<span class="avatar">${escapeHtml(student.name.split(" ").map((part) => part[0]).join("").slice(0, 2))}</span>`;
+        }
+
+        function statusBadge(status) {
+            const key = status === "Placed" ? "placed" : status === "Rejected" ? "rejected" : status === "Applied" ? "applied" : "round";
+            return `<span class="status ${key}">${status}</span>`;
+        }
+
+        function openModal(title, body) {
+            document.getElementById("modalTitle").textContent = title;
+            document.getElementById("modalBody").innerHTML = body;
+            document.getElementById("modalBackdrop").classList.add("open");
+        }
+
+        function closeModal() {
+            document.getElementById("modalBackdrop").classList.remove("open");
+        }
+
+        function today() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function escapeHtml(text) {
+            return String(text ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char]));
+        }
+
+        function escapeAttr(text) {
+            return escapeHtml(text).replace(/`/g, "&#096;");
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const email = value("loginEmail").toLowerCase();
+            const password = value("loginPassword");
+            const user = db.users.find((item) => item.email.toLowerCase() === email && item.password === password);
+            if (!user) {
+                document.getElementById("loginError").textContent = "Invalid email or password.";
+                return;
+            }
+            setSession(user);
+        });
+
+        document.querySelectorAll("[data-login]").forEach((button) => button.addEventListener("click", () => {
+            document.getElementById("loginEmail").value = button.dataset.login;
+            document.getElementById("loginPassword").value = PASSWORD;
+        }));
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            session = null;
+            localStorage.removeItem("placementPortalSession");
+            render();
+        });
+
+        document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+        document.getElementById("modalBackdrop").addEventListener("click", (event) => {
+            if (event.target.id === "modalBackdrop") closeModal();
+        });
+
+        render();
+    </script>
+</body>
+</html>
